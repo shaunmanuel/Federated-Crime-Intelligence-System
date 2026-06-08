@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "gray", "font": {"color": "black"}, "id": "Family:FG0658", "label": "Family:FG0658", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00829", "label": "Suspect:S00829", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S03526", "label": "Suspect:S03526", "shape": "dot", "size": 25}, {"color": "brown", "font": {"color": "black"}, "id": "Safehouse:SH087", "label": "Safehouse:SH087", "shape": "dot", "size": 15}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0994", "label": "Family:FG0994", "shape": "dot", "size": 10}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0118", "label": "Family:FG0118", "shape": "dot", "size": 10}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0526", "label": "Family:FG0526", "shape": "dot", "size": 10}, {"color": "brown", "font": {"color": "black"}, "id": "Safehouse:SH246", "label": "Safehouse:SH246", "shape": "dot", "size": 15}, {"color": "purple", "font": {"color": "black"}, "id": "Bank:AC10872248", "label": "Bank:AC10872248", "shape": "dot", "size": 15}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S02152", "label": "Suspect:S02152", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04054", "label": "Suspect:S04054", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01096", "label": "Suspect:S01096", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00042", "label": "Suspect:S00042", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04442", "label": "Suspect:S04442", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04471", "label": "Suspect:S04471", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01430", "label": "Suspect:S01430", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S03756", "label": "Suspect:S03756", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00445", "label": "Suspect:S00445", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01550", "label": "Suspect:S01550", "shape": "dot", "size": 25}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0482", "label": "Family:FG0482", "shape": "dot", "size": 10}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0058", "label": "Family:FG0058", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01950", "label": "Suspect:S01950", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S02420", "label": "Suspect:S02420", "shape": "dot", "size": 25}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0728", "label": "Family:FG0728", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04695", "label": "Suspect:S04695", "shape": "dot", "size": 25}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0427", "label": "Family:FG0427", "shape": "dot", "size": 10}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0632", "label": "Family:FG0632", "shape": "dot", "size": 10}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0577", "label": "Family:FG0577", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01449", "label": "Suspect:S01449", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S02510", "label": "Suspect:S02510", "shape": "dot", "size": 25}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0358", "label": "Family:FG0358", "shape": "dot", "size": 10}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0198", "label": "Family:FG0198", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01899", "label": "Suspect:S01899", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S03377", "label": "Suspect:S03377", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04250", "label": "Suspect:S04250", "shape": "dot", "size": 25}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0493", "label": "Family:FG0493", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00452", "label": "Suspect:S00452", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00005", "label": "Suspect:S00005", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00952", "label": "Suspect:S00952", "shape": "dot", "size": 25}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0528", "label": "Family:FG0528", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04763", "label": "Suspect:S04763", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S03801", "label": "Suspect:S03801", "shape": "dot", "size": 25}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0838", "label": "Family:FG0838", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01552", "label": "Suspect:S01552", "shape": "dot", "size": 25}, {"color": "brown", "font": {"color": "black"}, "id": "Safehouse:SH032", "label": "Safehouse:SH032", "shape": "dot", "size": 15}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0910", "label": "Family:FG0910", "shape": "dot", "size": 10}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00928", "label": "Suspect:S00928", "shape": "dot", "size": 25}, {"color": "brown", "font": {"color": "black"}, "id": "Safehouse:SH173", "label": "Safehouse:SH173", "shape": "dot", "size": 15}, {"color": "gray", "font": {"color": "black"}, "id": "Family:FG0403", "label": "Family:FG0403", "shape": "dot", "size": 10}, {"color": "brown", "font": {"color": "black"}, "id": "Safehouse:SH292", "label": "Safehouse:SH292", "shape": "dot", "size": 15}]);
+                  edges = new vis.DataSet([{"from": "Family:FG0658", "to": "Suspect:S00005"}, {"from": "Family:FG0658", "to": "Suspect:S00042"}, {"from": "Suspect:S00829", "to": "Suspect:S00005"}, {"from": "Suspect:S03526", "to": "Suspect:S00005"}, {"from": "Safehouse:SH087", "to": "Suspect:S00005"}, {"from": "Safehouse:SH087", "to": "Suspect:S00042"}, {"from": "Family:FG0994", "to": "Suspect:S00005"}, {"from": "Family:FG0994", "to": "Suspect:S00042"}, {"from": "Family:FG0118", "to": "Suspect:S00005"}, {"from": "Family:FG0526", "to": "Suspect:S00005"}, {"from": "Safehouse:SH246", "to": "Suspect:S00005"}, {"from": "Bank:AC10872248", "to": "Suspect:S00005"}, {"from": "Suspect:S02152", "to": "Suspect:S00005"}, {"from": "Suspect:S04054", "to": "Suspect:S00005"}, {"from": "Suspect:S01096", "to": "Suspect:S00005"}, {"from": "Suspect:S01096", "to": "Family:FG0198"}, {"from": "Suspect:S01096", "to": "Family:FG0910"}, {"from": "Suspect:S00042", "to": "Safehouse:SH173"}, {"from": "Suspect:S00042", "to": "Suspect:S00005"}, {"from": "Suspect:S00042", "to": "Family:FG0632"}, {"from": "Suspect:S00042", "to": "Safehouse:SH032"}, {"from": "Suspect:S00042", "to": "Safehouse:SH292"}, {"from": "Suspect:S04442", "to": "Suspect:S00005"}, {"from": "Suspect:S04471", "to": "Suspect:S00005"}, {"from": "Suspect:S01430", "to": "Safehouse:SH173"}, {"from": "Suspect:S01430", "to": "Suspect:S00005"}, {"from": "Suspect:S03756", "to": "Suspect:S00005"}, {"from": "Suspect:S00445", "to": "Suspect:S00005"}, {"from": "Suspect:S01550", "to": "Suspect:S00005"}, {"from": "Family:FG0482", "to": "Suspect:S00005"}, {"from": "Family:FG0058", "to": "Suspect:S00005"}, {"from": "Suspect:S01950", "to": "Suspect:S00005"}, {"from": "Suspect:S02420", "to": "Suspect:S00005"}, {"from": "Family:FG0728", "to": "Suspect:S00005"}, {"from": "Suspect:S04695", "to": "Suspect:S00005"}, {"from": "Family:FG0427", "to": "Suspect:S00005"}, {"from": "Family:FG0632", "to": "Suspect:S00005"}, {"from": "Family:FG0577", "to": "Suspect:S00005"}, {"from": "Suspect:S01449", "to": "Suspect:S00005"}, {"from": "Suspect:S02510", "to": "Suspect:S00005"}, {"from": "Family:FG0358", "to": "Suspect:S00005"}, {"from": "Family:FG0198", "to": "Suspect:S00005"}, {"from": "Suspect:S01899", "to": "Suspect:S00005"}, {"from": "Suspect:S03377", "to": "Suspect:S00005"}, {"from": "Suspect:S04250", "to": "Suspect:S00005"}, {"from": "Family:FG0493", "to": "Suspect:S00005"}, {"from": "Suspect:S00452", "to": "Suspect:S00005"}, {"from": "Suspect:S00005", "to": "Suspect:S00952"}, {"from": "Suspect:S00005", "to": "Family:FG0528"}, {"from": "Suspect:S00005", "to": "Suspect:S04763"}, {"from": "Suspect:S00005", "to": "Suspect:S03801"}, {"from": "Suspect:S00005", "to": "Family:FG0838"}, {"from": "Suspect:S00005", "to": "Suspect:S01552"}, {"from": "Suspect:S00005", "to": "Safehouse:SH032"}, {"from": "Suspect:S00005", "to": "Family:FG0910"}, {"from": "Suspect:S00005", "to": "Suspect:S00928"}, {"from": "Suspect:S00005", "to": "Safehouse:SH173"}, {"from": "Suspect:S00005", "to": "Family:FG0403"}, {"from": "Suspect:S00005", "to": "Safehouse:SH292"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

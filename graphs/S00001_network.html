@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "black", "font": {"color": "black"}, "id": "Case:C031552", "label": "Case:C031552", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C063000", "label": "Case:C063000", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C067891", "label": "Case:C067891", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C097449", "label": "Case:C097449", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00022", "label": "Suspect:S00022", "shape": "dot", "size": 25}, {"color": "black", "font": {"color": "black"}, "id": "Case:C018864", "label": "Case:C018864", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C088242", "label": "Case:C088242", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C017959", "label": "Case:C017959", "shape": "dot", "size": 20}, {"color": "pink", "font": {"color": "black"}, "id": "Family:FG0686", "label": "Family:FG0686", "shape": "dot", "size": 15}, {"color": "black", "font": {"color": "black"}, "id": "Case:C057789", "label": "Case:C057789", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01067", "label": "Suspect:S01067", "shape": "dot", "size": 25}, {"color": "black", "font": {"color": "black"}, "id": "Case:C002678", "label": "Case:C002678", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C019167", "label": "Case:C019167", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C091371", "label": "Case:C091371", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01087", "label": "Suspect:S01087", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04541", "label": "Suspect:S04541", "shape": "dot", "size": 25}, {"color": "pink", "font": {"color": "black"}, "id": "Family:FG0009", "label": "Family:FG0009", "shape": "dot", "size": 15}, {"color": "black", "font": {"color": "black"}, "id": "Case:C051392", "label": "Case:C051392", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C040493", "label": "Case:C040493", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C002761", "label": "Case:C002761", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C071631", "label": "Case:C071631", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C096996", "label": "Case:C096996", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C068756", "label": "Case:C068756", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C062993", "label": "Case:C062993", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C008433", "label": "Case:C008433", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C028930", "label": "Case:C028930", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C005753", "label": "Case:C005753", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C065250", "label": "Case:C065250", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C075444", "label": "Case:C075444", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C047480", "label": "Case:C047480", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00784", "label": "Suspect:S00784", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00524", "label": "Suspect:S00524", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S02329", "label": "Suspect:S02329", "shape": "dot", "size": 25}, {"color": "brown", "font": {"color": "black"}, "id": "Safehouse:SH199", "label": "Safehouse:SH199", "shape": "dot", "size": 15}, {"color": "black", "font": {"color": "black"}, "id": "Case:C079741", "label": "Case:C079741", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S03874", "label": "Suspect:S03874", "shape": "dot", "size": 25}, {"color": "pink", "font": {"color": "black"}, "id": "Family:FG0145", "label": "Family:FG0145", "shape": "dot", "size": 15}, {"color": "black", "font": {"color": "black"}, "id": "Case:C067828", "label": "Case:C067828", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C008675", "label": "Case:C008675", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S01408", "label": "Suspect:S01408", "shape": "dot", "size": 25}, {"color": "black", "font": {"color": "black"}, "id": "Case:C091855", "label": "Case:C091855", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S04916", "label": "Suspect:S04916", "shape": "dot", "size": 25}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S03978", "label": "Suspect:S03978", "shape": "dot", "size": 25}, {"color": "black", "font": {"color": "black"}, "id": "Case:C080959", "label": "Case:C080959", "shape": "dot", "size": 20}, {"color": "red", "font": {"color": "black"}, "id": "Suspect:S00001", "label": "Suspect:S00001", "shape": "dot", "size": 25}, {"color": "black", "font": {"color": "black"}, "id": "Case:C099912", "label": "Case:C099912", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C085588", "label": "Case:C085588", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C024977", "label": "Case:C024977", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C073735", "label": "Case:C073735", "shape": "dot", "size": 20}, {"color": "black", "font": {"color": "black"}, "id": "Case:C074054", "label": "Case:C074054", "shape": "dot", "size": 20}]);
+                  edges = new vis.DataSet([{"from": "Case:C031552", "to": "Suspect:S00001"}, {"from": "Case:C063000", "to": "Suspect:S00001"}, {"from": "Case:C067891", "to": "Suspect:S00001"}, {"from": "Case:C097449", "to": "Suspect:S00001"}, {"from": "Suspect:S00022", "to": "Safehouse:SH199"}, {"from": "Suspect:S00022", "to": "Family:FG0009"}, {"from": "Suspect:S00022", "to": "Family:FG0145"}, {"from": "Suspect:S00022", "to": "Suspect:S00001"}, {"from": "Case:C018864", "to": "Suspect:S00001"}, {"from": "Case:C088242", "to": "Suspect:S00001"}, {"from": "Case:C017959", "to": "Suspect:S00001"}, {"from": "Family:FG0686", "to": "Suspect:S00001"}, {"from": "Case:C057789", "to": "Suspect:S00001"}, {"from": "Suspect:S01067", "to": "Suspect:S00001"}, {"from": "Case:C002678", "to": "Suspect:S00001"}, {"from": "Case:C019167", "to": "Suspect:S00001"}, {"from": "Case:C091371", "to": "Suspect:S00001"}, {"from": "Suspect:S01087", "to": "Suspect:S00001"}, {"from": "Suspect:S04541", "to": "Suspect:S00001"}, {"from": "Family:FG0009", "to": "Suspect:S00001"}, {"from": "Case:C051392", "to": "Suspect:S00001"}, {"from": "Case:C040493", "to": "Suspect:S00001"}, {"from": "Case:C002761", "to": "Suspect:S00001"}, {"from": "Case:C071631", "to": "Suspect:S00001"}, {"from": "Case:C096996", "to": "Suspect:S00001"}, {"from": "Case:C068756", "to": "Suspect:S00001"}, {"from": "Case:C062993", "to": "Suspect:S00001"}, {"from": "Case:C008433", "to": "Suspect:S00001"}, {"from": "Case:C028930", "to": "Suspect:S00001"}, {"from": "Case:C005753", "to": "Suspect:S00001"}, {"from": "Case:C065250", "to": "Suspect:S00001"}, {"from": "Case:C075444", "to": "Suspect:S00001"}, {"from": "Case:C047480", "to": "Suspect:S00001"}, {"from": "Suspect:S00784", "to": "Suspect:S00001"}, {"from": "Suspect:S00524", "to": "Safehouse:SH199"}, {"from": "Suspect:S00524", "to": "Suspect:S00001"}, {"from": "Suspect:S02329", "to": "Suspect:S00001"}, {"from": "Safehouse:SH199", "to": "Suspect:S00001"}, {"from": "Case:C079741", "to": "Suspect:S00001"}, {"from": "Suspect:S03874", "to": "Suspect:S00001"}, {"from": "Family:FG0145", "to": "Suspect:S00001"}, {"from": "Case:C067828", "to": "Suspect:S00001"}, {"from": "Case:C008675", "to": "Suspect:S00001"}, {"from": "Suspect:S01408", "to": "Suspect:S00001"}, {"from": "Case:C091855", "to": "Suspect:S00001"}, {"from": "Suspect:S04916", "to": "Suspect:S00001"}, {"from": "Suspect:S03978", "to": "Suspect:S00001"}, {"from": "Case:C080959", "to": "Suspect:S00001"}, {"from": "Suspect:S00001", "to": "Case:C024977"}, {"from": "Suspect:S00001", "to": "Case:C099912"}, {"from": "Suspect:S00001", "to": "Case:C085588"}, {"from": "Suspect:S00001", "to": "Case:C073735"}, {"from": "Suspect:S00001", "to": "Case:C074054"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
