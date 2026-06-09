@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+networkx
+sentence-transformers
+scikit-learn
+plotly
+pyvis
+faiss-cpu
+torch
