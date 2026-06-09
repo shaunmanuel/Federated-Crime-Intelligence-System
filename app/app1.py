@@ -17,6 +17,8 @@ import streamlit as st
 import pandas as pd
 import faiss
 import subprocess
+import plotly.express as px
+import plotly.graph_objects as go
 from sentence_transformers import SentenceTransformer
 from src.federated_search import (
     federated_search
@@ -40,7 +42,34 @@ st.set_page_config(
     page_title="Crime Intelligence System",
     layout="wide"
 )
+st.markdown("""
+<style>
 
+[data-testid="stAppViewContainer"] {
+    background-color: #0e1117;
+}
+
+[data-testid="stSidebar"] {
+    background-color: #161b22;
+}
+
+[data-testid="stHeader"] {
+    background: rgba(0,0,0,0);
+}
+
+h1,h2,h3 {
+    color: #58a6ff;
+}
+
+div[data-testid="metric-container"] {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # ==================================================
 # LOAD DATA
 # ==================================================
@@ -81,11 +110,40 @@ index = load_index()
 # TITLE
 # ==================================================
 
-st.title("Crime Intelligence System")
+st.markdown("""
+# 🛡️ Federated Crime Intelligence Platform
 
-st.markdown(
-    "### Federated Crime Intelligence and Criminal Network Analysis System"
-)
+### Privacy-Preserving Crime Intelligence, Federated Retrieval and Criminal Network Analysis
+
+---
+""")
+st.markdown("""
+<div style="
+padding:15px;
+background:#161b22;
+border-radius:10px;
+border:1px solid #30363d;
+">
+
+<h3 style="color:#58a6ff;">
+🛡️ National Crime Intelligence Network
+</h3>
+
+<p>
+Status: ONLINE
+<br>
+Federated Retrieval Engine: ACTIVE
+<br>
+Connected Agencies: 3
+<br>
+Knowledge Graph: LOADED
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+
 
 # ==================================================
 # SIDEBAR
@@ -118,7 +176,9 @@ if page == "Intelligence Dashboard":
     st.info(
     "Cross-Agency Crime Intelligence and Investigation Platform"
 )
-
+    st.success("🟢 All Agencies Connected")
+    st.info("🔍 Federated Retrieval Engine Online")
+    st.warning("⚠ Active Criminal Networks Detected")
     col1, col2, col3, col4 = st.columns(4)
 
     col1.metric(
@@ -155,7 +215,17 @@ if page == "Intelligence Dashboard":
         "Crime Type",
         "Count"
     ]
+    fig = px.bar(
+    crime_counts.head(10),
+    x="Crime Type",
+    y="Count",
+    title="Top Crime Categories"
+    )
 
+    st.plotly_chart(
+    fig,
+    use_container_width=True
+    )
     st.dataframe(
         crime_counts,
         use_container_width=True
@@ -178,73 +248,106 @@ elif page == "New Investigation":
 
         if query.strip():
 
-            with st.spinner(
-                "Searching similar crimes..."
-            ):
+            import time
 
-                query_embedding = model.encode(
-                    [query]
-                ).astype("float32")
+            progress = st.progress(0)
 
-                results = federated_search(
-    query_embedding,
-    query
-)
+            status = st.empty()
 
-                st.subheader(
-                    "Cross-Agency Intelligence Matches"
+            steps = [
+                "Generating Query Embedding...",
+                "Searching Agency A...",
+                "Searching Agency B...",
+                "Searching Agency C...",
+                "Running Federated Coordination...",
+                "Calculating Intelligence Scores...",
+                "Generating Investigation Report..."
+            ]
+
+            for i, step in enumerate(steps):
+
+                status.markdown(
+                      f"### 🔍 {step}"
                 )
 
-                st.dataframe(
-                    results,
-                    use_container_width=True
+                time.sleep(0.25)
+
+                progress.progress(
+                    int(
+                        ((i + 1) / len(steps))
+                        * 100
+                    )
                 )
 
-                st.subheader(
-                    "Investigator Explanation"
+            status.success(
+                "Investigation Complete"
+            )
+
+            query_embedding = model.encode(
+                [query]
+            ).astype("float32")
+
+            results = federated_search(
+                query_embedding,
+                query
+            )
+
+            st.subheader(
+                "Cross-Agency Intelligence Matches"
+            )
+
+            st.dataframe(
+                results,
+                use_container_width=True
+            )
+
+            st.subheader(
+                "Investigator Explanation"
+            )
+
+            for _, row in results.iterrows():
+
+                explanation = []
+
+                explanation.append(
+                    f"Similar crime type ({row['crime_type']})"
                 )
 
-
-
-
-
-                for _, row in results.iterrows():
-
-                    explanation = []
+                if str(
+                    row["weapon_used"]
+                ) != "Unknown":
 
                     explanation.append(
-                        f"Similar crime type ({row['crime_type']})"
+                        f"Weapon pattern: {row['weapon_used']}"
                     )
 
-                    if str(
-                        row["weapon_used"]
-                    ) != "Unknown":
+                explanation.append(
+                    f"Gang association: {row['gang_id']}"
+                )
 
-                        explanation.append(
-                            f"Weapon pattern: {row['weapon_used']}"
-                        )
+                explanation.append(
+                    f"Similarity score: {row['similarity_score']:.4f}"
+                )
 
-                    explanation.append(
-                        f"Gang association: {row['gang_id']}"
-                    )
-
-                    explanation.append(
-                        f"Similarity score: {row['similarity_score']:.4f}"
-                    )
-
-                    st.warning(
-                        f"""
+                st.warning(
+                    f"""
 Case {row['case_id']}
 
 Reason for Match:
 
 """ + "\n".join(
-                            [
-                                f"✓ {x}"
-                                for x in explanation
-                            ]
-                        )
+                        [
+                            f"✓ {x}"
+                            for x in explanation
+                        ]
                     )
+                )
+
+                # NEW: Similarity Progress Bar
+                st.progress(
+                    float(row["similarity_score"])
+                )
+
 
                 st.divider()
 
@@ -1338,8 +1441,16 @@ elif page == "Model Evaluation":
         "Retrieval Performance Visualization"
     )
 
-    st.bar_chart(
-        chart_df
+    fig = px.bar(
+    metrics_df,
+    x="Metric",
+    y="Score",
+    title="Evaluation Metrics"
+    )
+
+    st.plotly_chart(
+    fig,
+    use_container_width=True
     )
 
     st.divider()
@@ -1499,7 +1610,23 @@ elif page == "Threat Intelligence":
     df = pd.read_csv(
         "data/processed_crime_data.csv"
     )
+    avg_risk = df["risk_score"].mean()
 
+    fig = go.Figure(
+    go.Indicator(
+        mode="gauge+number",
+        value=avg_risk,
+        title={"text":"National Threat Level"},
+        gauge={
+            "axis":{"range":[0,100]}
+               }
+         )
+    )
+
+    st.plotly_chart(
+    fig,
+    use_container_width=True
+    )
     # ==========================================
     # TOP METRICS
     # ==========================================
@@ -1914,3 +2041,4 @@ elif page == "Dataset Overview":
         df.head(100),
         use_container_width=True
     )
+
